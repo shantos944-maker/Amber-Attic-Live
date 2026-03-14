@@ -1,21 +1,22 @@
-name: 24/7 Amber Attic Stream
+name: 24h_Stream
 
 on:
   schedule:
-    - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর অটো রিস্টার্ট হবে
-  workflow_dispatch: # আপনি চাইলে ম্যানুয়ালিও স্টার্ট করতে পারবেন
+    - cron: '0 */6 * * *' # প্রতি ৬ ঘণ্টা পর পর নিজে থেকে রিস্টার্ট হবে
+  workflow_dispatch:
 
 jobs:
   stream:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
+    - name: Checkout
       uses: actions/checkout@v2
 
     - name: Install FFmpeg
-      run: sudo apt install -y ffmpeg
+      run: sudo apt update && sudo apt install -y ffmpeg
 
-    - name: Start 24/7 Stream
+    - name: Start Streaming
+      timeout-minutes: 355
       run: |
         ffmpeg -re -stream_loop -1 -i video.mp4 \
         -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k \
